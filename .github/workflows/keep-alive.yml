@@ -1,0 +1,22 @@
+name: keep-alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping all three Render Free services
+        run: |
+          set +e
+          for url in \
+            "https://whatsapp-webhook-router-b5xw.onrender.com/health" \
+            "https://banson-media-bot.onrender.com/health" \
+            "https://benson-tasks-inbox.onrender.com/health"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 90 "$url")
+            echo "$url -> HTTP $code"
+          done
+          exit 0
